@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: banking-backend
+    env: java
+    buildCommand: cd backend && ./mvnw clean package
+    startCommand: java -jar backend/target/banking-system-1.0.0.jar
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: banking-db
+          property: connectionString
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: banking-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: banking-db
+          property: password
+
+  - type: web
+    name: banking-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://banking-backend.onrender.com/api
+
+databases:
+  - name: banking-db
+    databaseName: banking_db
+    user: banking_user
