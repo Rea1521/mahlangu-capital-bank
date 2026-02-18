@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/statements")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://mahlangu-capital-bank-frontend.onrender.com", allowCredentials = "true")
 public class StatementController {
     
     @Autowired
