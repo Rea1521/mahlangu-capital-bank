@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Container, Form, Button, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { register } from '../services/api';
 import { toast } from 'react-toastify';
 
@@ -13,6 +13,7 @@ function Register() {
     address: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,74 +25,91 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
     try {
-      await register(formData);
+      const response = await register(formData);
       toast.success('Registration successful! Please login.');
       navigate('/');
     } catch (err) {
-      setError(err.response?.data || 'Registration failed');
+      let errorMessage = 'Registration failed';
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.response?.data) {
+        errorMessage = err.response.data;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
       toast.error('Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Container className="mt-5">
-      <Card style={{ 
-        maxWidth: '500px', 
-        margin: '0 auto',
-        backgroundColor: '#1A1A1A',
+    <div className="login-container">
+      <Card className="login-card" style={{ 
+        backgroundColor: '#FFFFFF',
         border: '1px solid #FFD700',
-        color: '#FFFFFF'
+        color: '#333333',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
       }}>
         <Card.Body>
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
             <img 
               src={require('../assets/logo.png')} 
               alt="Mahlangu Capital Bank" 
-              style={{ width: '60px', height: '60px', borderRadius: '10px' }}
+              style={{ width: '80px', height: '80px', borderRadius: '12px', marginBottom: '15px' }}
             />
-            <h2 style={{ color: '#FFD700', fontSize: '20px', marginTop: '10px' }}>
-              Join Mahlangu Capital Bank
-            </h2>
+            <h2 style={{ color: '#000000', fontSize: '22px', marginBottom: '5px' }}>Create Account</h2>
+            <p style={{ color: '#666666', fontSize: '14px' }}>Join Mahlangu Capital Bank</p>
           </div>
           
           {error && <Alert variant="danger">{error}</Alert>}
           
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label style={{ color: '#FFD700' }}>Full Name</Form.Label>
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Full Name</Form.Label>
               <Form.Control
                 type="text"
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
                 required
+                disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '10px'
                 }}
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
-              <Form.Label style={{ color: '#FFD700' }}>Email</Form.Label>
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Email</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
+                disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '10px'
                 }}
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
-              <Form.Label style={{ color: '#FFD700' }}>Password</Form.Label>
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Password</Form.Label>
               <Form.Control
                 type="password"
                 name="password"
@@ -99,69 +117,91 @@ function Register() {
                 onChange={handleChange}
                 required
                 minLength="6"
+                disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '10px'
                 }}
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
-              <Form.Label style={{ color: '#FFD700' }}>Phone Number</Form.Label>
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Phone Number</Form.Label>
               <Form.Control
                 type="tel"
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
+                disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '10px'
                 }}
               />
             </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label style={{ color: '#FFD700' }}>Address</Form.Label>
+
+            <Form.Group className="mb-4">
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Address</Form.Label>
               <Form.Control
                 as="textarea"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
                 rows="2"
+                disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '10px'
                 }}
               />
             </Form.Group>
-            
-            <Button 
-              variant="primary" 
-              type="submit" 
-              className="w-100"
+
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={loading}
               style={{
-                backgroundColor: '#FFD700',
+                width: '100%',
+                backgroundColor: '#000000',
                 border: 'none',
-                color: '#000000',
+                color: '#FFD700',
                 fontWeight: '600',
-                padding: '10px'
+                padding: '12px',
+                borderRadius: '8px',
+                fontSize: '16px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                marginBottom: '15px'
               }}
             >
-              Register
+              {loading ? 'Creating Account...' : 'Register'}
             </Button>
+
+            <div className="text-center">
+              <Link 
+                to="/" 
+                style={{ 
+                  color: '#666666', 
+                  textDecoration: 'none',
+                  fontSize: '14px'
+                }}
+              >
+                Already have an account? <span style={{ color: '#FFD700' }}>Login</span>
+              </Link>
+            </div>
           </Form>
-          
-          <div className="text-center mt-3">
-            <Link to="/" style={{ color: '#FFD700', textDecoration: 'none' }}>
-              Already have an account? Login
-            </Link>
-          </div>
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Container, Form, Button, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { login } from '../services/api';
 import { toast } from 'react-toastify';
 
@@ -12,128 +12,98 @@ function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
-  
-  try {
-    console.log('1. Login attempt with:', { email });
-    console.log('2. Making API call to backend...');
+    e.preventDefault();
+    setLoading(true);
+    setError('');
     
-    const data = await login({ email, password });
-    
-    console.log('3. API call successful!');
-    console.log('4. Received data:', data);
-    console.log('5. Data type:', typeof data);
-    console.log('6. Data keys:', Object.keys(data));
-    
-    // Check if we have a successful response
-    if (data && data.success === true) {
-      console.log('7. Login successful!');
+    try {
+      const data = await login({ email, password });
       
-      const customerData = {
-        id: data.id,
-        customerId: data.customerId,
-        fullName: data.fullName,
-        email: data.email
-      };
-      
-      console.log('8. Customer data:', customerData);
-      localStorage.setItem('customer', JSON.stringify(customerData));
-      
-      const stored = localStorage.getItem('customer');
-      console.log('9. Verified stored:', stored);
-      
-      toast.success('Login successful!');
-      navigate('/dashboard');
-    } else {
-      console.log('7. Login failed - success flag false or missing');
-      console.log('8. Response data:', data);
-      setError(data?.message || 'Login failed');
+      if (data && data.success === true) {
+        const customerData = {
+          id: data.id,
+          customerId: data.customerId,
+          fullName: data.fullName,
+          email: data.email
+        };
+        
+        localStorage.setItem('customer', JSON.stringify(customerData));
+        toast.success('Login successful!');
+        navigate('/dashboard');
+      } else {
+        setError(data?.message || 'Login failed');
+        toast.error('Login failed');
+      }
+    } catch (err) {
+      let errorMessage = 'Login failed';
+      if (typeof err === 'string') {
+        errorMessage = err;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
       toast.error('Login failed');
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error('===== ERROR DETAILS =====');
-    console.error('Error object:', err);
-    console.error('Error type:', typeof err);
-    
-    if (typeof err === 'object') {
-      console.error('Error keys:', Object.keys(err));
-      console.error('Error message:', err.message);
-      console.error('Error response:', err.response);
-    }
-    
-    let errorMessage = 'Login failed';
-    if (typeof err === 'string') {
-      errorMessage = err;
-    } else if (err.message) {
-      errorMessage = err.message;
-    } else if (err.error) {
-      errorMessage = err.error;
-    }
-    
-    setError(errorMessage);
-    toast.error('Login failed');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
-    <Container className="mt-5">
-      <Card style={{ 
-        maxWidth: '400px', 
-        margin: '0 auto',
-        backgroundColor: '#1A1A1A',
+    <div className="login-container">
+      <Card className="login-card" style={{ 
+        backgroundColor: '#FFFFFF',
         border: '1px solid #FFD700',
-        color: '#FFFFFF'
+        color: '#333333',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
       }}>
         <Card.Body>
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
             <img 
               src={require('../assets/logo.png')} 
               alt="Mahlangu Capital Bank" 
-              style={{ width: '80px', height: '80px', borderRadius: '12px' }}
+              style={{ width: '100px', height: '100px', borderRadius: '16px', marginBottom: '15px' }}
             />
-            <h2 style={{ color: '#FFD700', marginTop: '10px' }}>MAHLANGU CAPITAL BANK</h2>
-            <p style={{ color: '#FFFFFF', opacity: 0.7 }}>Strength. Security. Wealth.</p>
+            <h2 style={{ color: '#000000', fontSize: '24px', marginBottom: '5px' }}>MAHLANGU CAPITAL BANK</h2>
+            <p style={{ color: '#666666', fontSize: '14px' }}>Strength. Security. Wealth.</p>
           </div>
           
           {error && <Alert variant="danger">{error}</Alert>}
           
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ color: '#FFD700' }}>Email address</Form.Label>
+            <Form.Group className="mb-4">
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Email Address</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter email"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF',
-                  borderRadius: '8px'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '12px'
                 }}
               />
             </Form.Group>
 
             <Form.Group className="mb-4">
-              <Form.Label style={{ color: '#FFD700' }}>Password</Form.Label>
+              <Form.Label style={{ color: '#000000', fontWeight: '500' }}>Password</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Enter password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
                 style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid #FFD700',
-                  color: '#FFFFFF',
-                  borderRadius: '8px'
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #E0E0E0',
+                  color: '#333333',
+                  borderRadius: '8px',
+                  padding: '12px'
                 }}
               />
             </Form.Group>
@@ -144,36 +114,38 @@ function Login() {
               disabled={loading}
               style={{
                 width: '100%',
-                backgroundColor: '#FFD700',
+                backgroundColor: '#000000',
                 border: 'none',
-                color: '#000000',
+                color: '#FFD700',
                 fontWeight: '600',
-                padding: '12px',
+                padding: '14px',
                 borderRadius: '8px',
                 fontSize: '16px',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.7 : 1
+                opacity: loading ? 0.7 : 1,
+                marginBottom: '20px'
               }}
             >
               {loading ? 'Logging in...' : 'Login'}
             </Button>
-          </Form>
 
-          <div className="text-center mt-4">
-            <Link 
-              to="/register" 
-              style={{ 
-                color: '#FFD700', 
-                textDecoration: 'none',
-                fontSize: '14px'
-              }}
-            >
-              Don't have an account? Register here
-            </Link>
-          </div>
+            <div className="text-center">
+              <Link 
+                to="/register" 
+                style={{ 
+                  color: '#000000', 
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}
+              >
+                Don't have an account? <span style={{ color: '#FFD700' }}>Register here</span>
+              </Link>
+            </div>
+          </Form>
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 }
 

@@ -24,7 +24,7 @@ function CardDetails() {
       setAccount(accountResponse.data);
       
       const transactionsResponse = await getTransactions(accountNumber);
-      setTransactions(transactionsResponse.data.slice(0, 5)); // Show last 5 transactions
+      setTransactions(transactionsResponse.data.slice(0, 5));
     } catch (error) {
       toast.error('Failed to load account details');
     }
@@ -50,19 +50,21 @@ function CardDetails() {
   if (!account) {
     return (
       <div className="card-details">
-        <p style={{ color: '#FFFFFF', textAlign: 'center' }}>Loading...</p>
+        <p style={{ color: '#333333', textAlign: 'center' }}>Loading...</p>
+        <BottomNav active="cards" />
       </div>
     );
   }
 
   return (
     <div className="card-details">
+      {/* Header */}
       <div className="card-details-header">
         <span className="back-button" onClick={() => navigate('/dashboard')}>←</span>
         <h1 className="card-details-title">Cards</h1>
       </div>
 
-      {/* Card Preview */}
+      {/* Card Preview - Preserved black/gold theme */}
       <div className={`card-preview ${account.accountType === 'CREDIT' ? 'credit' : ''}`}>
         <div className="card-chip"></div>
         <div className="card-number">{maskCardNumber(account.accountNumber)}</div>
@@ -95,7 +97,7 @@ function CardDetails() {
         <div className="limit-progress">
           <div className="limit-progress-bar" style={{ width: '45%' }}></div>
         </div>
-        <a href="#" className="limit-manage">Manage</a>
+        <a href="#" className="limit-manage" style={{ color: '#000000' }}>Manage</a>
       </div>
 
       {/* Card Actions */}
@@ -141,22 +143,23 @@ function CardDetails() {
 
       {/* Recent Transactions */}
       <div style={{ marginTop: '30px' }}>
-        <h3 style={{ color: '#FFD700', fontSize: '18px', marginBottom: '15px' }}>
+        <h3 style={{ color: '#000000', fontSize: '18px', marginBottom: '15px' }}>
           Recent Transactions
         </h3>
         {transactions.map((txn) => (
           <div key={txn.id} style={{
-            backgroundColor: '#1A1A1A',
+            backgroundColor: '#F5F5F5',
             padding: '12px',
             borderRadius: '8px',
             marginBottom: '8px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            border: '1px solid #E0E0E0'
           }}>
             <div>
-              <div style={{ color: '#FFFFFF', fontSize: '14px' }}>{txn.description}</div>
-              <div style={{ color: '#FFD700', fontSize: '12px' }}>
+              <div style={{ color: '#000000', fontSize: '14px' }}>{txn.description}</div>
+              <div style={{ color: '#666666', fontSize: '12px' }}>
                 {new Date(txn.transactionDate).toLocaleDateString()}
               </div>
             </div>
@@ -169,6 +172,26 @@ function CardDetails() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* View Full Account Button */}
+      <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+        <button
+          onClick={() => navigate(`/account/${accountNumber}`)}
+          style={{
+            backgroundColor: '#000000',
+            color: '#FFD700',
+            border: 'none',
+            padding: '15px',
+            borderRadius: '8px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            width: '100%',
+            fontSize: '16px'
+          }}
+        >
+          🔍 View Full Account Details (Deposit/Withdraw/Transfer)
+        </button>
       </div>
 
       <BottomNav active="cards" />
