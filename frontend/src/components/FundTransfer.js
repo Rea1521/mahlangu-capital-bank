@@ -343,7 +343,7 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
         </Button>
       </Form>
 
-            {/* Confirmation Modal */}
+                  {/* Confirmation Modal */}
       <Modal 
         show={showConfirmation} 
         onHide={() => setShowConfirmation(false)}
@@ -351,24 +351,39 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
         style={{ color: '#000000' }}
         backdrop="static"
         className="transfer-modal"
+        dialogClassName="modal-dialog-scrollable modal-fullscreen-sm-down"
+        size="lg"
       >
-        <Modal.Header closeButton style={{ backgroundColor: '#000000', color: '#FFD700', borderBottom: '2px solid #FFD700' }}>
+        <Modal.Header closeButton style={{ 
+          backgroundColor: '#000000', 
+          color: '#FFD700', 
+          borderBottom: '2px solid #FFD700',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1060
+        }}>
           <Modal.Title>Confirm Transfer</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ backgroundColor: '#FFFFFF', padding: '25px' }}>
+        
+        <Modal.Body style={{ 
+          backgroundColor: '#FFFFFF', 
+          padding: '20px',
+          maxHeight: 'calc(100vh - 200px)',
+          overflowY: 'auto'
+        }}>
           {transferDetails && (
             <div>
               {/* Amount Display */}
               <div style={{ 
                 textAlign: 'center', 
-                marginBottom: '25px',
-                padding: '25px',
+                marginBottom: '20px',
+                padding: '20px',
                 background: 'linear-gradient(135deg, #000000 0%, #1A1A1A 100%)',
                 borderRadius: '12px',
                 border: '2px solid #FFD700'
               }}>
                 <div style={{ fontSize: '14px', color: '#FFD700', marginBottom: '5px' }}>Amount</div>
-                <div style={{ fontSize: '42px', fontWeight: '800', color: '#FFD700' }}>
+                <div style={{ fontSize: '48px', fontWeight: '800', color: '#FFD700' }}>
                   R{transferDetails.amount.toFixed(2)}
                 </div>
               </div>
@@ -377,9 +392,8 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
               <div style={{ 
                 backgroundColor: '#F5F5F5', 
                 borderRadius: '12px', 
-                padding: '20px',
-                marginBottom: '20px',
-                border: '1px solid #E0E0E0'
+                padding: '15px',
+                marginBottom: '15px'
               }}>
                 {/* From Account */}
                 <div style={{ 
@@ -390,23 +404,24 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
                   borderBottom: '1px solid #E0E0E0'
                 }}>
                   <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
+                    width: '45px', 
+                    height: '45px', 
                     backgroundColor: '#FFD700', 
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '15px'
+                    marginRight: '15px',
+                    flexShrink: 0
                   }}>
-                    <span style={{ fontSize: '20px' }}>⬇️</span>
+                    <span style={{ fontSize: '22px' }}>⬇️</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666666' }}>From Account</div>
-                    <div style={{ fontSize: '16px', fontWeight: '600' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '13px', color: '#666666' }}>From Account</div>
+                    <div style={{ fontSize: '18px', fontWeight: '600', wordBreak: 'break-all' }}>
                       {transferDetails.fromAccount}
                     </div>
-                    <div style={{ fontSize: '14px', color: '#666666' }}>
+                    <div style={{ fontSize: '15px', color: '#666666' }}>
                       {transferDetails.fromAccountHolder || 'Unknown'}
                     </div>
                   </div>
@@ -421,23 +436,24 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
                   borderBottom: '1px solid #E0E0E0'
                 }}>
                   <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
+                    width: '45px', 
+                    height: '45px', 
                     backgroundColor: '#FFD700', 
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '15px'
+                    marginRight: '15px',
+                    flexShrink: 0
                   }}>
-                    <span style={{ fontSize: '20px' }}>⬆️</span>
+                    <span style={{ fontSize: '22px' }}>⬆️</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666666' }}>To Account</div>
-                    <div style={{ fontSize: '16px', fontWeight: '600' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '13px', color: '#666666' }}>To Account</div>
+                    <div style={{ fontSize: '18px', fontWeight: '600', wordBreak: 'break-all' }}>
                       {transferDetails.toAccount}
                     </div>
-                    <div style={{ fontSize: '14px', color: '#666666' }}>
+                    <div style={{ fontSize: '15px', color: '#666666' }}>
                       {transferDetails.toAccountHolder || 'Unknown'}
                     </div>
                   </div>
@@ -453,20 +469,21 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
                     borderBottom: '1px solid #E0E0E0'
                   }}>
                     <div style={{ 
-                      width: '40px', 
-                      height: '40px', 
+                      width: '45px', 
+                      height: '45px', 
                       backgroundColor: '#F0F0F0', 
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginRight: '15px'
+                      marginRight: '15px',
+                      flexShrink: 0
                     }}>
-                      <span style={{ fontSize: '20px' }}>📝</span>
+                      <span style={{ fontSize: '22px' }}>📝</span>
                     </div>
-                    <div>
-                      <div style={{ fontSize: '12px', color: '#666666' }}>Description</div>
-                      <div style={{ fontSize: '16px', fontWeight: '500' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13px', color: '#666666' }}>Description</div>
+                      <div style={{ fontSize: '18px', fontWeight: '500', wordBreak: 'break-word' }}>
                         {transferDetails.description}
                       </div>
                     </div>
@@ -479,29 +496,30 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
                   alignItems: 'center'
                 }}>
                   <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
+                    width: '45px', 
+                    height: '45px', 
                     backgroundColor: transferDetails.internalTransfer ? '#FFD700' : '#F0F0F0', 
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '15px'
+                    marginRight: '15px',
+                    flexShrink: 0
                   }}>
-                    <span style={{ fontSize: '20px' }}>
+                    <span style={{ fontSize: '22px' }}>
                       {transferDetails.internalTransfer ? '⭐' : '↔️'}
                     </span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666666' }}>Transfer Type</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '13px', color: '#666666' }}>Transfer Type</div>
                     <div style={{ 
                       fontSize: '16px', 
                       fontWeight: '600',
-                      color: transferDetails.internalTransfer ? '#FFD700' : '#000000'
+                      color: transferDetails.internalTransfer ? '#B8860B' : '#000000'
                     }}>
                       {transferDetails.internalTransfer ? 
-                        '⭐ Internal Transfer (Your own account)' : 
-                        '↔️ External Transfer (Another user)'}
+                        'Internal Transfer (Your own account)' : 
+                        'External Transfer (Another user)'}
                     </div>
                   </div>
                 </div>
@@ -511,24 +529,31 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
               <div style={{
                 backgroundColor: '#FFF3CD',
                 border: '1px solid #FFE69C',
-                borderRadius: '8px',
-                padding: '12px',
-                marginBottom: '20px',
+                borderRadius: '10px',
+                padding: '15px',
                 color: '#856404',
-                fontSize: '13px'
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
               }}>
-                ⚠️ Please verify the recipient account details carefully. Transfers cannot be reversed.
+                <span style={{ fontSize: '24px' }}>⚠️</span>
+                <span>Please verify the recipient account details carefully. Transfers cannot be reversed.</span>
               </div>
             </div>
           )}
         </Modal.Body>
+        
         <Modal.Footer style={{ 
           backgroundColor: '#F5F5F5', 
           borderTop: '2px solid #FFD700',
-          padding: '15px 25px',
+          padding: '15px 20px',
           display: 'flex',
           justifyContent: 'space-between',
-          gap: '10px'
+          gap: '15px',
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 1060
         }}>
           <Button 
             variant="secondary" 
@@ -536,10 +561,11 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
             style={{ 
               backgroundColor: '#666666', 
               border: 'none',
-              padding: '12px 30px',
+              padding: '14px 20px',
               fontWeight: '600',
-              borderRadius: '8px',
-              flex: 1
+              borderRadius: '10px',
+              flex: 1,
+              fontSize: '16px'
             }}
           >
             Cancel
@@ -552,10 +578,11 @@ function FundTransfer({ fromAccount, onSuccess, allAccounts = [] }) {
               backgroundColor: '#000000', 
               border: 'none', 
               color: '#FFD700',
-              padding: '12px 30px',
+              padding: '14px 20px',
               fontWeight: '600',
-              borderRadius: '8px',
-              flex: 2
+              borderRadius: '10px',
+              flex: 2,
+              fontSize: '16px'
             }}
           >
             {loading ? 'Processing...' : 'Confirm Transfer'}
