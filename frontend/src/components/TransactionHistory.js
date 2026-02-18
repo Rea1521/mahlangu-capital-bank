@@ -102,8 +102,8 @@ function TransactionHistory({ transactions: initialTransactions, accountNumber }
             <th>Description</th>
             <th>Category</th>
             <th>Type</th>
-            <th>Amount</th>
-            <th>Balance</th>
+            <th>Amount(R)</th>
+            <th>Balance(R)</th>
           </tr>
         </thead>
         <tbody>
@@ -122,9 +122,9 @@ function TransactionHistory({ transactions: initialTransactions, accountNumber }
                 </Badge>
               </td>
               <td className={transaction.amount > 0 ? 'text-success' : 'text-danger'}>
-                ${transaction.amount?.toFixed(2)}
+                R{transaction.amount?.toFixed(2)}
               </td>
-              <td>${transaction.balanceAfterTransaction?.toFixed(2)}</td>
+              <td>R{transaction.balanceAfterTransaction?.toFixed(2)}</td>
             </tr>
           ))}
           {transactions.length === 0 && (

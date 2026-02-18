@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAccount, getTransactions } from '../services/api';
+import { getAccount, getTransactions, getCustomerAccounts } from '../services/api';
 import TransactionForm from './TransactionForm';
 import TransactionHistory from './TransactionHistory';
 import FundTransfer from './FundTransfer';
@@ -12,15 +12,19 @@ import BottomNav from './BottomNav';
 function AccountDetails() {
   const { accountNumber } = useParams();
   const [account, setAccount] = useState(null);
+  const [allAccounts, setAllAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [showSettings, setShowSettings] = useState(false);
   const [showStatement, setShowStatement] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(accountNumber);
+  const [showAccountSelector, setShowAccountSelector] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     loadAccountDetails();
+    loadAllAccounts();
   }, [accountNumber]);
 
   const loadAccountDetails = async () => {
@@ -37,9 +41,28 @@ function AccountDetails() {
     }
   };
 
+  const loadAllAccounts = async () => {
+    try {
+      const customerData = localStorage.getItem('customer');
+      if (customerData) {
+        const customer = JSON.parse(customerData);
+        const response = await getCustomerAccounts(customer.id);
+        setAllAccounts(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to load accounts:', error);
+    }
+  };
+
   const handleTransactionComplete = () => {
     loadAccountDetails();
     setActiveTab('transactions');
+  };
+
+  const handleAccountChange = (newAccountNumber) => {
+    setSelectedAccount(newAccountNumber);
+    setShowAccountSelector(false);
+    navigate(`/account/${newAccountNumber}`);
   };
 
   if (loading) {
@@ -77,17 +100,80 @@ function AccountDetails() {
 
   return (
     <div className="card-details">
-      {/* Header with navigation */}
+      {/* Header with navigation and account selector */}
       <div className="card-details-header">
         <span className="back-button" onClick={() => navigate('/dashboard')}>←</span>
         <h1 className="card-details-title">Account Details</h1>
-        <span 
-          className="back-button" 
-          onClick={() => navigate(`/card/${accountNumber}`)}
-          style={{ marginLeft: 'auto', fontSize: '14px', color: '#000000' }}
-        >
-          View Card 💳
-        </span>
+        <div style={{ position: 'relative', marginLeft: 'auto' }}>
+          <button
+            onClick={() => setShowAccountSelector(!showAccountSelector)}
+            style={{
+              backgroundColor: '#000000',
+              color: '#FFD700',
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            Switch Card 💳
+          </button>
+          {showAccountSelector && (
+            <div style={{
+              position: 'absolute',
+              top: '40px',
+              right: '0',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #FFD700',
+              borderRadius: '8px',
+              padding: '10px',
+              zIndex: 1000,
+              minWidth: '200px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+            }}>
+              {allAccounts.map(acc => (
+                <div
+                  key={acc.id}
+                  onClick={() => handleAccountChange(acc.accountNumber)}
+                  style={{
+                    padding: '10px',
+                    cursor: 'pointer',
+                    borderRadius: '4px',
+                    backgroundColor: acc.accountNumber === selectedAccount ? '#FFD700' : 'transparent',
+                    color: acc.accountNumber === selectedAccount ? '#000000' : '#333333',
+                    marginBottom: '5px'
+                  }}
+                >
+                  <div style={{ fontSize: '12px', fontWeight: '600' }}>{acc.accountNumber}</div>
+                  <div style={{ fontSize: '10px' }}>{acc.accountType} - R{acc.balance?.toFixed(2)}</div>
+                </div>
+              ))}
+              <div
+                onClick={() => {
+                  setShowAccountSelector(false);
+                  navigate('/create-account');
+                }}
+                style={{
+                  padding: '10px',
+                  cursor: 'pointer',
+                  borderRadius: '4px',
+                  backgroundColor: '#000000',
+                  color: '#FFD700',
+                  textAlign: 'center',
+                  marginTop: '5px',
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}
+              >
+                + Create New Card
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Card Preview - Preserved black/gold theme */}
@@ -115,7 +201,7 @@ function AccountDetails() {
         <div style={{ textAlign: 'right' }}>
           <div style={{ color: '#666666', fontSize: '12px' }}>Current Balance</div>
           <div style={{ color: '#000000', fontSize: '24px', fontWeight: '700' }}>
-            R{account.balance?.toFixed(2)}
+            R{account.balance?.toFixed(2)} {/* Changed from $ to R */}
           </div>
         </div>
       </div>
@@ -213,6 +299,26 @@ function AccountDetails() {
         </button>
       </div>
 
+      {/* Create New Card Button - Always visible */}
+      <div style={{ marginBottom: '20px' }}>
+        <button
+          onClick={() => navigate('/create-account')}
+          style={{
+            backgroundColor: '#000000',
+            color: '#FFD700',
+            border: 'none',
+            padding: '15px',
+            borderRadius: '8px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            width: '100%',
+            fontSize: '16px'
+          }}
+        >
+          ➕ Create New Card
+        </button>
+      </div>
+
       {/* Tab Navigation */}
       <div style={{
         display: 'flex',
@@ -270,7 +376,7 @@ function AccountDetails() {
                   fontSize: '16px',
                   fontWeight: '600'
                 }}>
-                  {txn.amount > 0 ? '+' : '-'}R{Math.abs(txn.amount).toFixed(2)}
+                  {txn.amount > 0 ? '+' : '-'}R{Math.abs(txn.amount).toFixed(2)} {/* Changed from $ to R */}
                 </div>
               </div>
             ))}
@@ -284,6 +390,7 @@ function AccountDetails() {
               type="DEPOSIT"
               accountNumber={account.accountNumber}
               onSuccess={handleTransactionComplete}
+              allAccounts={allAccounts}
             />
           </div>
         )}
@@ -295,6 +402,7 @@ function AccountDetails() {
               type="WITHDRAWAL"
               accountNumber={account.accountNumber}
               onSuccess={handleTransactionComplete}
+              allAccounts={allAccounts}
             />
           </div>
         )}
@@ -305,6 +413,7 @@ function AccountDetails() {
             <FundTransfer 
               fromAccount={account.accountNumber}
               onSuccess={handleTransactionComplete}
+              allAccounts={allAccounts}
             />
           </div>
         )}
