@@ -6,12 +6,18 @@ import com.banking.model.TransactionCategory;
 import com.banking.dto.TransactionDTO;
 import com.banking.service.AccountService;
 import com.banking.service.TransactionService;
+import com.banking.service.AccountService.TransferResult;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -32,7 +38,9 @@ public class TransactionController {
                 .getTransactionsByDateRange(account, LocalDate.now().minusMonths(1), LocalDate.now());
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
@@ -43,7 +51,9 @@ public class TransactionController {
             List<Transaction> transactions = transactionService.getAccountTransactions(account);
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
@@ -58,7 +68,9 @@ public class TransactionController {
                 .getTransactionsByDateRange(account, startDate, endDate);
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
@@ -78,7 +90,9 @@ public class TransactionController {
                 .getTransactionsByCategory(account, categoryEnum);
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
@@ -109,10 +123,10 @@ public class TransactionController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "success", false,
-                "error", e.getMessage()
-            ));
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
@@ -138,10 +152,10 @@ public class TransactionController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "valid", false,
-                "error", e.getMessage()
-            ));
+            Map<String, Object> error = new HashMap<>();
+            error.put("valid", false);
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
@@ -153,7 +167,6 @@ public class TransactionController {
         private String pin;
         private String description;
         
-        // Getters and setters
         public String getFromAccount() { return fromAccount; }
         public void setFromAccount(String fromAccount) { this.fromAccount = fromAccount; }
         public String getToAccount() { return toAccount; }
@@ -171,7 +184,6 @@ public class TransactionController {
         private String toAccount;
         private double amount;
         
-        // Getters and setters
         public String getFromAccount() { return fromAccount; }
         public void setFromAccount(String fromAccount) { this.fromAccount = fromAccount; }
         public String getToAccount() { return toAccount; }
