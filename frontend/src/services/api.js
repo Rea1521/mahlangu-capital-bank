@@ -92,4 +92,10 @@ export const transferFunds = (transferData) =>
 export const validateTransfer = (validationData) => 
   api.post('/transactions/transfer/validate', validationData);
 
+// Statement endpoints
+export const downloadStatement = (accountNumber, startDate, endDate) => 
+  api.get(`/statements/${accountNumber}/pdf?startDate=${startDate}&endDate=${endDate}`, {
+    responseType: 'blob'
+  });
+
 export default api;
