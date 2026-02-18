@@ -801,3 +801,54 @@ body {
   border: 2px solid var(--gold) !important;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
 }
+
+/* Modal Styles */
+.modal-content {
+  border: 2px solid #FFD700 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.modal-header {
+  border-bottom: 2px solid #FFD700 !important;
+  padding: 15px 20px !important;
+}
+
+.modal-footer {
+  border-top: 2px solid #FFD700 !important;
+  padding: 15px 20px !important;
+}
+
+.modal-backdrop {
+  z-index: 1040 !important;
+}
+
+.modal {
+  z-index: 1050 !important;
+}
+
+/* Ensure bottom nav doesn't overlap */
+.bottom-nav {
+  z-index: 1030 !important;
+}
+
+/* Transfer modal specific */
+.transfer-modal .modal-dialog {
+  margin: 30px auto;
+  max-width: 500px;
+}
+
+@media (max-width: 576px) {
+  .transfer-modal .modal-dialog {
+    margin: 10px;
+    max-width: calc(100% - 20px);
+  }
+  
+  .transfer-modal .modal-footer {
+    flex-direction: column;
+  }
+  
+  .transfer-modal .modal-footer button {
+    width: 100%;
+    margin: 5px 0 !important;
+  }
