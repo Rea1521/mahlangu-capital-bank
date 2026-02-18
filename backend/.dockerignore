@@ -1,0 +1,17 @@
+target/
+*.log
+*.class
+.idea/
+.vscode/
+*.iml
+.DS_Store
+*.swp
+*.swo
+.git/
+.gitignore
+README.md
+mvnw
+mvnw.cmd
+.mvn/
+.dockerignore
+Dockerfile

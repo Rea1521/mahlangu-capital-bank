@@ -1,13 +1,30 @@
-# Multi-stage build
-FROM eclipse-temurin:11-jdk-alpine AS builder
+# Build stage using Maven 
+FROM maven:3.8.8-eclipse-temurin-11 AS build
 WORKDIR /app
-COPY . .
-# Ensure mvnw is executable and run build
-RUN chmod +x mvnw && ./mvnw clean package -DskipTests
+
+# Copy pom.xml and download dependencies (caching layer)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build the application
+RUN mvn clean package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:11-jre-alpine
 WORKDIR /app
-COPY --from=builder /app/target/banking-system-1.0.0.jar app.jar
+
+# Copy the jar from build stage
+COPY --from=build /app/target/banking-system-*.jar app.jar
+
+# Create non-root user for security
+RUN addgroup -S banking && adduser -S banking -G banking
+USER banking
+
+# Expose port
 EXPOSE 8080
+
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
