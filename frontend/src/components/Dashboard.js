@@ -161,7 +161,7 @@ function Dashboard() {
           <div
             key={account.id}
             className={`account-card ${account.accountType === 'SAVINGS' ? 'savings' : 'credit'}`}
-            onClick={() => navigate(`/card/${account.accountNumber}`)}
+            onClick={() => navigate(`/account/${account.accountNumber}`)}
           >
             <div className="account-number">{account.accountNumber}</div>
             <div className="account-type">
