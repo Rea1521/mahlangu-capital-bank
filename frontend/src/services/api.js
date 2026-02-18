@@ -79,15 +79,17 @@ export const updateAccountStatus = (accountNumber, status) =>
 // Transaction endpoints
 export const getTransactions = (accountNumber) => 
   api.get(`/transactions/account/${accountNumber}`);
+
+export const getAllTransactions = (accountNumber) => 
+  api.get(`/transactions/account/${accountNumber}/all`);
+
 export const getTransactionsByDateRange = (accountNumber, startDate, endDate) => 
   api.get(`/transactions/account/${accountNumber}/daterange?startDate=${startDate}&endDate=${endDate}`);
-export const transferFunds = (fromAccount, toAccount, amount, pin, description) => 
-  api.post(`/transactions/transfer?fromAccount=${fromAccount}&toAccount=${toAccount}&amount=${amount}&pin=${pin}&description=${description || ''}`);
 
-// Statement endpoints
-export const downloadStatement = (accountNumber, startDate, endDate) => 
-  api.get(`/statements/${accountNumber}/pdf?startDate=${startDate}&endDate=${endDate}`, {
-    responseType: 'blob'
-  });
+export const transferFunds = (transferData) => 
+  api.post('/transactions/transfer', transferData);
+
+export const validateTransfer = (validationData) => 
+  api.post('/transactions/transfer/validate', validationData);
 
 export default api;
